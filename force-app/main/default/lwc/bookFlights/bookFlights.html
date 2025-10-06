@@ -1,0 +1,61 @@
+<template>
+    <lightning-card title="Book Flights New" icon-name="custom:custom63">
+
+        <!-- Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading Flights..." size="medium"></lightning-spinner>
+        </template>
+
+        <!-- Travel Request Details -->
+        <lightning-record-view-form record-id={recordId} object-api-name="Travel_Request__c">
+            <div class="slds-m-around_medium">
+                <lightning-output-field field-name="Source__c"></lightning-output-field>
+                <lightning-output-field field-name="Destination__c"></lightning-output-field>
+                <lightning-output-field field-name="Start_Date__c"></lightning-output-field>
+                <lightning-output-field field-name="End_Date__c"></lightning-output-field>
+            </div>
+        </lightning-record-view-form>
+
+        <!-- Search Flights Button -->
+        <div class="slds-m-around_medium">
+            <lightning-button label="Search Flights" variant="brand" onclick={handleSearch}></lightning-button>
+        </div>
+
+        <!-- Flights List -->
+        <template if:true={flights}>
+            <div class="slds-m-around_medium slds-grid slds-wrap">
+                <template for:each={flights} for:item="flight">
+                    <div key={flight.id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_small">
+                        <section class="slds-card">
+                            <header class="slds-card__header slds-grid">
+                                <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                    <div class="slds-media__figure">
+                                        <img src={flight.airlineLogo} alt={flight.airline} style="width:50px;height:50px;"/>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title">{flight.airline}</h2>
+                                        <p>Flight: {flight.flightNumber}</p>
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="slds-card__body slds-card__body_inner">
+                                <p><strong>Departure:</strong> {flight.departureAirportName} ({flight.departureAirportId}) at {flight.departureTime}</p>
+                                <p><strong>Arrival:</strong> {flight.arrivalAirportName} ({flight.arrivalAirportId}) at {flight.arrivalTime}</p>
+                                <p><strong>Duration:</strong> {flight.durationMinutes} minutes</p>
+                                <p><strong>Price:</strong> ${flight.price}</p>
+                            </div>
+                            <footer class="slds-card__footer">
+                                <lightning-button variant="brand" label="Book" onclick={handleBook} data-id={flight.id}></lightning-button>
+                            </footer>
+                        </section>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <template if:true={flightsError}>
+            <div class="slds-text-color_error slds-m-around_medium">{flightsError}</div>
+        </template>
+
+    </lightning-card>
+</template>

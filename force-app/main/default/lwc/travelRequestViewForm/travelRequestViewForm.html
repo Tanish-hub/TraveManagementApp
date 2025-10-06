@@ -1,0 +1,83 @@
+<template>
+    <lightning-card title="Travel Request Details" icon-name="standard:travel">
+        <div class="travel-container">
+
+            <!-- Travel Request Info -->
+            <lightning-record-view-form record-id={recordId} object-api-name="Travel_Request__c">
+                <div class="slds-grid slds-wrap slds-gutters slds-var-p-around_small form-section">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name="Source__c"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name="Destination__c"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name="Start_Date__c"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name="End_Date__c"></lightning-output-field>
+                    </div>
+                </div>
+            </lightning-record-view-form>
+
+            <!-- Search Flights Button -->
+            <div class="slds-align_absolute-center slds-m-top_medium">
+                <lightning-button 
+                    variant="brand" 
+                    label="🔍 Search Flights" 
+                    class="search-btn"
+                    onclick={handleSearchFlights}>
+                </lightning-button>
+            </div>
+
+            <!-- Flight Options -->
+            <template if:true={flightOptions}>
+                <div class="slds-m-top_large">
+                    <template for:each={flightOptions} for:item="option">
+                        <div key={option.uniqueKey} class="flight-card slds-box slds-m-bottom_x-large">
+                            <div class="slds-text-heading_small slds-text-title_bold flight-header">
+                                ✈️ Price: {option.price} INR | Total Duration: {option.totalDuration} mins
+                            </div>
+
+                            <div class="legs-section">
+                                <template for:each={option.legs} for:item="leg">
+                                    <div key={leg.uniqueKey} class="leg-card">
+                                        <div class="slds-grid slds-wrap slds-grid_align-spread leg-content">
+                                            <div class="slds-col slds-size_1-of-3">
+                                                <p><b>From:</b> {leg.departureAirport} ({leg.departureTime})</p>
+                                                <p><b>To:</b> {leg.arrivalAirport} ({leg.arrivalTime})</p>
+                                                <p><b>Travel Class:</b> {leg.travelClass}</p>
+                                            </div>
+
+                                            <div class="slds-col slds-size_1-of-3 slds-text-align_center">
+                                                <p><b>Airline:</b> {leg.airline}</p>
+                                                <p><b>Flight No:</b> {leg.flightNumber}</p>
+                                                <div class="airline-logo">
+                                                    <img src={leg.airlineLogo} alt={leg.airline} />
+                                                </div>
+                                            </div>
+
+                                            <div class="slds-col slds-size_1-of-3 slds-text-align_right">
+                                                <p><b>Duration:</b> {leg.duration} mins</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Book Flight Button -->
+                            <div class="slds-align_absolute-center slds-m-top_medium">
+                                <lightning-button 
+                                    label="Book This Flight" 
+                                    variant="success"
+                                    onclick={handleBookFlight}
+                                    data-option-key={option.uniqueKey}>
+                                </lightning-button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
